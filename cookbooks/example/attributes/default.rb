@@ -2,6 +2,6 @@
 # and override attributes to be applied to nodes that run this cookbook.
 
 # Set a default name
-default['example']['name'] = 'Sam Doe'
+default['example']['name'] = 'Sam Do'
 
 # For further information, see the Chef Infra documentation (https://docs.chef.io/attributes/).
