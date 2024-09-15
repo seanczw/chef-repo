@@ -1,20 +1,38 @@
 # Overview
 
-Every Chef Infra installation needs a Chef Repository. This is the place where cookbooks, policyfiles, config files and other artifacts for managing systems with Chef Infra will live. We strongly recommend storing this repository in a version control system such as Git and treating it like source code.
+This Chef repo contains a webserver cookbook that will install and run an Apache webserver on a Debian/RHEL OS.
 
-## Repository Directories
+## Steps taken to build (on Apple Silicon Mac)
 
-This repository contains several directories, and each directory contains a README file that describes what it is for in greater detail, and how to use it for managing your systems with Chef.
+Using the Homebrew package manager on your local machine
+- `brew install --cask chef-workstation` - Installs Chef Workstation. No Chef Infra/Hosted server or Chef Client node is required for these tests.
+- `brew install docker` - Installs Docker.
 
-- `cookbooks/` - Cookbooks you download or create.
-- `data_bags/` - Store data bags and items in .json in the repository.
-- `roles/` - Store roles in .rb or .json in the repository.
-- `environments/` - Store environments in .rb or .json in the repository.
+In your selected file location
+- `chef generate repo chef-repo` - Creates a boilerplate Chef repository called 'chef-repo'.
+- `chef generate cookbook chef-repo/webserver` - Creates a boilerplate Cookbook called 'webserver' in 'chef-repo'.
 
-## Configuration
+In cookbooks/webserver/
+- `kitchen init` - Sreates an initial Test Kitchen environment
+- `chef gem install kitchen-dokken` - Installs the kitchen-dokken Test Kitchen driver.
+kitchen-dokken is a Test Kitchen plugin for Docker that uses specially created Linux distribution Docker images and Chef Infra Docker images. More information available at https://kitchen.ci/docs/drivers/dokken/
 
-The config file, `.chef/config.rb` is a repository-specific configuration file for the knife command line tool. If you're using the Hosted Chef platform, you can download one for your organization from the management console. You can also generate a new config.rb by running `knife configure`. For more information about configuring Knife, see the Knife documentation at https://docs.chef.io/workstation/knife/
+## Write configurations and tests
 
-## Next Steps
+- cookbooks/webserver/recipes/default.rb
+  
+This file is the main recipe for the webserver cookbook. It contains the Chef code (resources and actions) that define how to configure the server, such as installing packages, creating files, and managing services.
 
-Read the README file in each of the subdirectories for more information about what goes in those directories.
+- cookbooks/webserver/kitchen.yml
+  
+The .kitchen.yml file is the configuration file for KitchenCI, the testing tool used to test Chef cookbooks. This file defines the environment in which your cookbook will be tested, including the platform, the provisioner, the driver, and the suites to run.
+
+- cookbooks/webserver/test/inetgration/default/default_test.rb
+  
+This file contains InSpec tests that verify the configuration applied by the webserver cookbook. InSpec is a testing framework that allows you to write tests to ensure your infrastructure is configured correctly.
+
+## To test
+
+Run `kitchen list` to verify that there is an instance each of Ubuntu 20.04 and CentOS Stream 9.
+
+Run `kitchen test` to test the apache2/httpd service and webpage contents.
