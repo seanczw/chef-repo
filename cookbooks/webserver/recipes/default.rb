@@ -6,13 +6,20 @@
 
 # recipes/default.rb
 
+package_name = case node['platform_family']
+when 'debian'
+  'apache2'
+when 'rhel'
+  'httpd'
+end
+
 # Install Apache
-package 'apache2' do
+package package_name do
     action :install
 end
 
 # Start Apache
-service 'apache2' do
+service package_name do
     action [:enable, :start]
 end
 

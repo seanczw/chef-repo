@@ -3,7 +3,14 @@
 # The Chef InSpec reference, with examples and extensive documentation, can be
 # found at https://docs.chef.io/inspec/resources/
 
-describe service('apache2.service') do
+apache_package = case os.family
+when 'debian'
+  'apache2'
+when 'redhat'
+  'httpd'
+end
+
+describe service(apache_package) do
   it { should be_enabled }
   it { should be_running }
 end
