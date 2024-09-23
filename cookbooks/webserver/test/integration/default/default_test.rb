@@ -19,3 +19,7 @@ describe http('http://localhost') do
   its('status') { should cmp 200 }
   its('body') { should match /Welcome to the OSU Open Source Lab!/ }
 end
+
+describe service('telnet') do
+  it{ should_not be_running}
+end

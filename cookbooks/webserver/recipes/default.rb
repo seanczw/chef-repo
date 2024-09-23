@@ -28,3 +28,10 @@ file '/var/www/html/index.html' do
     content '<html>Welcome to the OSU Open Source Lab!</html>'
     action :create
 end
+
+#Remove telnet for security
+['telnet', 'telnet-client'].each do |p|
+  package p do
+    action :remove
+  end
+end
